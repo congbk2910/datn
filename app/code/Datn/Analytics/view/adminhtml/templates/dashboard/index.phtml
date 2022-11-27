@@ -1,5 +1,5 @@
 <?php
-
+//Đây là dữ liệu được lấy từ bên file Datn\Analytics\Block\Adminhtml\Dashboard.php
 $orderData = $block->getOrderData();
 $lifeTimeSales = $block->getLifetimeSales();
 $averageOrder = $block->getAverageOrder();
@@ -17,6 +17,7 @@ if (isset($orderData)) {
 }
 
 ?>
+<!-- Toàn bộ code phía dưới là mã code HTML dùng để vẽ đồ thị -->
 <div class="right_col" role="main">
   <div class="">
     <div class="row top_tiles">
@@ -158,6 +159,7 @@ if (isset($orderData)) {
   </div>
 </div>
 
+<!-- Đây là dữ liệu dùng để đẩy vào file javascript hiển thị lên đồ thị -->
 <?php
 $formData = [
     'chartPlotData' => $orderData,
@@ -166,6 +168,7 @@ $formData = [
 $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($formData);
 ?>
 
+<!-- Đây là hàm dùng để tải các file javascript lên. Các file javascript này là các thư viện bên ngoài chỉ gọi vào sử dụng lại theo tài liệu của thư viện -->
 <script type="text/x-magento-init">
     {
       "*": {
@@ -183,6 +186,7 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
     }
 </script>
 
+<!-- Đoạn code dưới đây dùng để thêm google map api và hiển thị số lượng các tài khoản theo quốc gia lên bản đồ google -->
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script>
@@ -195,12 +199,7 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
         lng: -95.712891
       }
     });
-    // Create an array of alphabetical characters used to label the markers.
     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    // Add some markers to the map.
-    // Note: The code uses the JavaScript Array.prototype.map() method to
-    // create an array of markers based on a given "locations" array.
-    // The map() method here has nothing to do with the Google Maps API.
     var markers = locations.map(function(location, i) {
       return new google.maps.Marker({
         position: location,
@@ -215,7 +214,6 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
       });
       markerCluster.addMarker(marker);
     }
-    // Add a marker cluster to manage the markers.
     var markerCluster = new MarkerClusterer(map, markers, {
       imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });

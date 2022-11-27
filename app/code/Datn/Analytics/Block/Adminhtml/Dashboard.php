@@ -32,18 +32,22 @@ class Dashboard extends \Magento\Backend\Block\Template
         parent::__construct($context, $data);
     }
 
+    //Hàm lấy toàn bộ dữ liệu về orders từ database
     public function getOrders()
     {
         $orderCollection = $this->_orderCollectionFactory->create();
         return $orderCollection;
     }
 
+    // Hàm lấy ra 5 orders mới nhất từ database
     public function getLastOrders()
     {
         $orderCollection = $this->getOrders()->setOrder('entity_id', 'DESC')->setPageSize(5);
         return $orderCollection;
     }
 
+    // Hàm xử lý lọc dữ liệu về order từ database theo khoảng thời gian được gửi theo request thông qua parameter reportrange
+    // Nếu không có khoảng thời gian được gửi theo request thì sẽ mặc định khoảng thời gian là 7 ngày
     public function getOrderData()
     {
         $data = array();
@@ -80,6 +84,7 @@ class Dashboard extends \Magento\Backend\Block\Template
         return $data;
     }
 
+    // Hàm lấy tổng doanh thu là tổng grand_total của toàn bộ orders lấy từ database
     public function getLifetimeSales()
     {
         $order = $this->getOrders();
@@ -91,6 +96,7 @@ class Dashboard extends \Magento\Backend\Block\Template
         return $lifetimeSales;
     }
 
+    // Hàm tính doanh thu trung bình = tổng base_grand_total của toàn bộ orders lấy từ database (chia cho) / số lượng order count($order)
     public function getAverageOrder()
     {
         $order = $this->getOrders();
@@ -107,6 +113,7 @@ class Dashboard extends \Magento\Backend\Block\Template
         return $averageOrder;
     }
 
+    // Hàm lấy định dạng tiền tệ để hiển thị lên tầng view (ở đây là dollar $)
     public function getCurrencySymbol()
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -116,12 +123,14 @@ class Dashboard extends \Magento\Backend\Block\Template
         return $currencySymbol = $currency->getCurrencySymbol();
     }
 
+    // Hàm lấy toàn bộ dữ liệu về tài khoản khách hàng (customer) trong database
     protected function getCustomerCollection() {
         return $this->_customer->getCollection()
                ->addAttributeToSelect("*")
                ->load();
     }
     
+    // hàm tính toán số lượng tài khoản theo giới tính
     public function getCustomerGenderData() {
         $customers = $this->getCustomerCollection();
         $customerGender = [
