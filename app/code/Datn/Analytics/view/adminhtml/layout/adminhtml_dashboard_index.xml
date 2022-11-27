@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <!-- Custom Style -->
+        <css src="Datn_Analytics::build/css/admin_vendor.min.css"/>
+        <!-- Bootstrap -->
+        <css src="Datn_Analytics::vendors/bootstrap/css/bootstrap.min.css"/>
+        <!-- Font Awesome -->
+        <css src="Datn_Analytics::vendors/font-awesome/css/font-awesome.min.css"/>
+        <!-- NProgress -->
+        <css src="Datn_Analytics::vendors/nprogress/nprogress.css"/>
+        <!-- bootstrap-daterangepicker -->
+        <css src="Datn_Analytics::vendors/bootstrap-daterangepicker/daterangepicker.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <referenceBlock name="analytics_service_external_link" remove="true" />
+            <referenceBlock name="refresh_statistics" remove="true" />
+        </referenceContainer>
+    </body>
+</page>

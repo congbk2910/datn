@@ -1,0 +1,82 @@
+<?php $orderData = $block->getOrderData(); $lifeTimeSales = $block->getLifetimeSales(); $averageOrder = $block->getAverageOrder(); $totalSales = count($block->getOrders()); $lastOrders = $block->getLastOrders(); $customerGenderData = $block->getCustomerGenderData(); $sessionsArr = array(); $totalSessions = 0; if (isset($orderData)) { foreach ($orderData as $item) { $sessionsArr[] = $item[1]; $totalSessions += $item[1]; } } ?> <div class="right_col" role="main"><div class=""><div class="row top_tiles"><div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12"><div class="tile-stats"><div class="icon"><i class="fa fa-tachometer"></i></div><div class="count"><?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($lifeTimeSales, true, false); ?></div><h3>Lifetime Sales</h3><p>Definition of lifetime value of a vendor.</p></div></div><div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12"><div class="tile-stats"><div class="icon"><i class="fa fa-money"></i></div><div class="count"><?php echo $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($averageOrder, true, false); ?></div><h3>Average Order</h3><p>A key component of customer behavior.</p></div></div><div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12"><div class="tile-stats"><div class="icon"><i class="fa fa-check-square-o"></i></div><div class="count"><?php echo $totalSales;?></div><h3>Total Sales</h3><p>Number of total sales.</p></div></div></div><div class="row"><div class="col-md-12"><div class="x_panel"><div class="x_title"><h2>Sales Summary <small>Weekly progress</small></h2><div class="filter"><div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i> <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b></div></div><div class="clearfix"></div></div><div class="x_content"><div class="col-md-9 col-sm-12 col-xs-12"><div class="demo-container" style="height:280px"><div id="chart_plot" class="demo-placeholder"></div></div></div><div class="col-md-3 col-sm-12 col-xs-12"><div><div class="x_title"><h2>Last Orders</h2><ul class="nav navbar-right panel_toolbox"><li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a> <ul class="dropdown-menu" role="menu"><li><a href="#">Settings 1</a></li> <li><a href="#">Settings 2</a></li></ul></li> <li><a class="close-link"><i class="fa fa-close"></i></a></li></ul><div class="clearfix"></div></div><ul class="list-unstyled top_profiles scroll-view"><?php if(count($lastOrders)):?> <?php foreach($lastOrders as $order):?> <li class="media event"><a class="pull-left border-aero profile_thumb"><i class="fa fa-user aero"></i></a> <small>#<?php echo $order->getRealOrderId();?></small> <div class="media-body"><a class="title" href="#"><?php echo $order->getShippingAddress() ? $block->escapeHtml($order->getShippingAddress()->getName()) : '&nbsp;' ?></a> <p><strong><?php /* @escapeNotVerified */ echo $order->formatPrice($order->getGrandTotal()) ?>.</strong> Total Sales</p><p><small><?php echo $formatDate = date(("F j, Y, g:i a"), strtotime($order->getCreatedAt())); ?></small></p></div></li> <?php endforeach;?> <?php else:?> <li class="media event"><div class="message info empty"><span><?php /* @escapeNotVerified */ echo __('You have placed no orders.'); ?></span></div></li> <?php endif;?></ul></div></div><div class="row"><div class="col-md-12"><div class="x_panel"><div class="x_title"><h2>User <small>Activities</small></h2><ul class="nav navbar-right panel_toolbox"><li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li> <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a> <ul class="dropdown-menu" role="menu"><li><a href="#">Settings 1</a></li> <li><a href="#">Settings 2</a></li></ul></li> <li><a class="close-link"><i class="fa fa-close"></i></a></li></ul><div class="clearfix"></div></div><div class="x_content"><div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px; text-align: center;"><div class="col-md-6"><div id="mapContainer"><div id="map"></div></div></div><div class="col-md-6"><canvas id="canvasDoughnut" style="margin: 5px 10px 10px 0"></canvas></div></div></div></div></div></div></div></div></div></div></div></div></div><?php $formData = [ 'chartPlotData' => $orderData, 'customerGenderData' => $customerGenderData ]; $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($formData); ?> <script type="text/x-magento-init">
+    {
+      "*": {
+          "bootstrap_daterangepicker" : {},
+          "chartJs" : {},
+          "flot": {},
+          "flotPie": {},
+          "flotResize": {},
+          "flotStack": {},
+          "flotTime": {},
+          "dateJs": {},
+          "moment" : {},
+          "admin_vendor": <?php /* @noEscape */ echo $serializedFormData; ?> }
+    }</script><script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script><script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script><script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script><script>
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: {
+        lat: 37.09024,
+        lng: -95.712891
+      }
+    });
+    
+    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    
+    
+    
+    var markers = locations.map(function(location, i) {
+      return new google.maps.Marker({
+        position: location,
+        label: labels[i % labels.length]
+      });
+    });
+
+    function addMarker(location) {
+      var marker = new google.maps.Marker({
+        position: location,
+        map: map
+      });
+      markerCluster.addMarker(marker);
+    }
+    
+    var markerCluster = new MarkerClusterer(map, markers, {
+      imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+    });
+  }
+
+  var locations = [
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 37.09024,
+      lng: -95.712891
+    },
+    {
+      lat: 56.130366,
+      lng: -106.346771
+    },
+    {
+      lat: 56.130366,
+      lng: -106.346771
+    },
+  ];</script><style type="text/css"> #mapContainer, #map { height: 289px; width: 100%; margin: 0px; padding: 0px }</style>
