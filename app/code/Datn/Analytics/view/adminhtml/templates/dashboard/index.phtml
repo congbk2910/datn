@@ -1,21 +1,23 @@
 <?php
 //Đây là dữ liệu được lấy từ bên file Datn\Analytics\Block\Adminhtml\Dashboard.php
 $orderData = $block->getOrderData();
+$orderDataByCategories = $block->getOrderDataByCategories();
+$orderDataByCategoriesMaxLength = 0;
+if(count($orderDataByCategories)) {
+  foreach($orderDataByCategories as $order) {
+    if ($orderDataByCategoriesMaxLength < count($order)) {
+      $orderDataByCategoriesMaxLength = count($order);
+    }
+  }
+}
 $lifeTimeSales = $block->getLifetimeSales();
 $averageOrder = $block->getAverageOrder();
 $totalSales = count($block->getOrders());
 $lastOrders = $block->getLastOrders();
 $customerGenderData = $block->getCustomerGenderData();
-
-$sessionsArr = array();
-$totalSessions = 0;
-if (isset($orderData)) {
-  foreach ($orderData as $item) {
-    $sessionsArr[] = $item[1];
-    $totalSessions += $item[1];
-  }
-}
-
+$customerAge = $block->getCustomerAge();
+$customerAddress = $block->getCustomerAddress();
+$currency = $block->getCurrencySymbol();
 ?>
 <!-- Toàn bộ code phía dưới là mã code HTML dùng để vẽ đồ thị -->
 <div class="right_col" role="main">
@@ -51,9 +53,9 @@ if (isset($orderData)) {
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Sales Summary <small>Weekly progress</small></h2>
+            <h2>1. Tổng doanh thu (<?php echo $currency?>)</h2>
             <div class="filter">
-              <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+              <div class="reportrange pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                 <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
               </div>
@@ -113,45 +115,60 @@ if (isset($orderData)) {
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>User <small>Activities</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px; text-align: center;">
-                      <div class="col-md-6">
-                        <div id="mapContainer">
-                          <div id="map"></div>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <canvas id="canvasDoughnut" style="margin: 5px 10px 10px 0"></canvas>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div class="x_title">
+            <h2>2. Doanh thu theo loại sản phẩm (<?php echo $currency?>)</h2>
+            <div class="filter">
+              <div class="reportrange pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="col-md-9 col-sm-12 col-xs-12">
+              <div class="demo-container" style="height:280px">
+                <div id="chart_plot_2" class="demo-placeholder"></div>
               </div>
             </div>
           </div>
+          <div class="x_title">
+            <h2>3. Khách hàng</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Settings 1</a>
+                  </li>
+                  <li><a href="#">Settings 2</a>
+                  </li>
+                </ul>
+              </li>
+              <li><a class="close-link"><i class="fa fa-close"></i></a>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px; text-align: center;">
+              <div class="col-md-6">
+                <canvas id="canvasDoughnut1" style="margin: 5px 10px 10px 0"></canvas>
+                <label>Sex<label>
+              </div>
+              <div class="col-md-6">
+                <canvas id="canvasDoughnut2" style="margin: 5px 10px 10px 0"></canvas>
+                <label>Age<label>
+              </div>
+            </div>
+          </div>
+          <div class="x_content">
+            <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px; text-align: center;">
+              <div id="mapContainer">
+                <div id="map"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -163,7 +180,10 @@ if (isset($orderData)) {
 <?php
 $formData = [
     'chartPlotData' => $orderData,
-    'customerGenderData' => $customerGenderData
+    'chartPlotData2' => $orderDataByCategories,
+    'chartPlotData2Length' => $orderDataByCategoriesMaxLength,
+    'customerGenderData' => $customerGenderData,
+    'customerAge' => $customerAge
 ];
 $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($formData);
 ?>
@@ -193,10 +213,10 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
 <script>
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 2,
+      zoom: 6,
       center: {
-        lat: 37.09024,
-        lng: -95.712891
+        lat: 16.1091856,
+        lng: 109.3373489,
       }
     });
     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -219,45 +239,345 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
     });
   }
 
-  var locations = [
+  var locationsByProvince = [
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'an giang',
+      lat: 10.5721324,
+      lng: 105.1754284
     },
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'ba ria vung tau',
+      lat: 9.7181697,
+      lng: 106.4977231
     },
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'bac lieu',
+      lat: 9.3263408,
+      lng: 105.405512
     },
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'bac kan',
+      lat: 22.2727705,
+      lng: 105.5579458
     },
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'bac giang',
+      lat: 21.2917143,
+      lng: 106.1725826
     },
     {
-      lat: 37.09024,
-      lng: -95.712891
+      code: 'bac ninh',
+      lat: 21.1168121,
+      lng: 106.0292886
     },
     {
-      lat: 56.130366,
-      lng: -106.346771
+      code: 'ben tre',
+      lat: 10.237471,
+      lng: 106.303707
     },
     {
-      lat: 56.130366,
-      lng: -106.346771
+      code: 'binh duong',
+      lat: 11.1823828,
+      lng: 106.3635629
+    },
+    {
+      code: 'binh dinh',
+      lat: 14.1038209,
+      lng: 108.698791
+    },
+    {
+      code: 'binh phuoc',
+      lat: 11.8000054,
+      lng: 106.6388043
+    },
+    {
+      code: 'binh thuan',
+      lat: 11.014777,
+      lng: 107.9235668
+    },
+    {
+      code: 'binh thuan',
+      lat: 11.014777,
+      lng: 107.9235668
+    },
+    {
+      code: 'ca mau',
+      lat: 9.0585747,
+      lng: 104.4928281
+    },
+    {
+      code: 'cao bang',
+      lat: 22.739096,
+      lng: 105.7674975
+    },
+    {
+      code: 'can tho',
+      lat: 10.1232463,
+      lng: 105.2447762
+    },
+    {
+      code: 'da nang',
+      lat: 16.0719626,
+      lng: 108.007915
+    },
+    {
+      code: 'dak lak',
+      lat: 12.7884606,
+      lng: 107.9590984
+    },
+    {
+      code: 'dak nong',
+      lat: 12.2806273,
+      lng: 107.3798713
+    },
+    {
+      code: 'dien bien',
+      lat: 21.7173979,
+      lng: 101.7211026
+    },
+    {
+      code: 'dong nai',
+      lat: 11.0523995,
+      lng: 106.8835217
+    },
+    {
+      code: 'dong thap',
+      lat: 10.5549931,
+      lng: 105.2836177
+    },
+    {
+      code: 'gia lai',
+      lat: 13.8002849,
+      lng: 107.6002907
+    },
+    {
+      code: 'ha giang',
+      lat: 22.7728811,
+      lng: 104.9288303
+    },
+    {
+      code: 'ha nam',
+      lat: 20.5340646,
+      lng: 105.8357658
+    },
+    {
+      code: 'ha noi',
+      lat: 21.0227788,
+      lng: 105.8194112
+    },
+    {
+      code: 'ha tinh',
+      lat: 18.3543226,
+      lng: 105.8667251
+    },
+    {
+      code: 'hai duong',
+      lat: 20.9409087,
+      lng: 106.2893232
+    },
+    {
+      code: 'hai phong',
+      lat: 20.8467761,
+      lng: 106.6811942
+    },
+    {
+      code: 'hoa binh',
+      lat: 20.7095121,
+      lng: 105.0654954
+    },
+    {
+      code: 'ho chi minh',
+      lat: 10.7553404,
+      lng: 106.4143574
+    },
+    {
+      code: 'hau giang',
+      lat: 9.7888779,
+      lng: 105.4716745
+    },
+    {
+      code: 'hung yen',
+      lat: 20.6656298,
+      lng: 106.0283837
+    },
+    {
+      code: 'khanh hoa',
+      lat: 12.3192424,
+      lng: 108.7883163
+    },
+    {
+      code: 'kien giang',
+      lat: 9.8976444,
+      lng: 104.2178503
+    },
+    {
+      code: 'kon tum',
+      lat: 14.3430235,
+      lng: 107.8992585
+    },
+    {
+      code: 'lai chau',
+      lat: 22.38733,
+      lng: 103.4045645
+    },
+    {
+      code: 'lao cai',
+      lat: 22.4185935,
+      lng: 103.9092751
+    },
+    {
+      code: 'lang son',
+      lat: 21.8556412,
+      lng: 106.7118998
+    },
+    {
+      code: 'lam dong',
+      lat: 11.7658134,
+      lng: 107.7169628
+    },
+    {
+      code: 'long an',
+      lat: 10.7122475,
+      lng: 105.8443762
+    },
+    {
+      code: 'nam dinh',
+      lat: 20.417834,
+      lng: 106.1317916
+    },
+    {
+      code: 'nghe an',
+      lat: 19.275026,
+      lng: 104.2788738
+    },
+    {
+      code: 'ninh binh',
+      lat: 20.2451965,
+      lng: 105.9403463
+    },
+    {
+      code: 'ninh thuan',
+      lat: 11.7385972,
+      lng: 108.6112462
+    },
+    {
+      code: 'phu tho',
+      lat: 21.4157122,
+      lng: 105.1943473
+    },
+    {
+      code: 'phu yen',
+      lat: 13.2017744,
+      lng: 108.7842818
+    },
+    {
+      code: 'quang binh',
+      lat: 17.5056124,
+      lng: 106.021463
+    },
+    {
+      code: 'quang nam',
+      lat: 15.5097024,
+      lng: 107.6934847
+    },
+    {
+      code: 'quang ngai',
+      lat: 15.153855,
+      lng: 108.8072415
+    },
+    {
+      code: 'quang ninh',
+      lat: 21.1512793,
+      lng: 106.9911795
+    },
+    {
+      code: 'quang tri',
+      lat: 16.6950218,
+      lng: 107.0999612
+    },
+    {
+      code: 'soc trang',
+      lat: 9.6097891,
+      lng: 105.9427066
+    },
+    {
+      code: 'son la',
+      lat: 21.3022004,
+      lng: 103.5568495
+    },
+    {
+      code: 'tay ninh',
+      lat: 11.3659451,
+      lng: 106.0945484
+    },
+    {
+      code: 'thai binh',
+      lat: 20.4530182,
+      lng: 106.309547
+    },
+    {
+      code: 'thai binh',
+      lat: 21.5774537,
+      lng: 105.7683845
+    },
+    {
+      code: 'thanh hoa',
+      lat: 19.8087897,
+      lng: 105.7559498
+    },
+    {
+      code: 'thua thien hue',
+      lat: 16.3692932,
+      lng: 107.3230363
+    },
+    {
+      code: 'tien giang',
+      lat: 10.3885117,
+      lng: 106.1701265
+    },
+    {
+      code: 'tra vinh',
+      lat: 9.9515334,
+      lng: 106.3097508
+    },
+    {
+      code: 'tuyen quang',
+      lat: 21.7831657,
+      lng: 105.1987475
+    },
+    {
+      code: 'vinh long',
+      lat: 10.2519313,
+      lng: 105.9215409
+    },
+    {
+      code: 'vinh long',
+      lat: 10.2519313,
+      lng: 105.9215409
+    },
+    {
+      code: 'vinh phuc',
+      lat: 21.3632663,
+      lng: 105.4178304
+    },
+    {
+      code: 'yen bai',
+      lat: 21.7224185,
+      lng: 104.8522478
     },
   ];
+  var locations = [];
+
+  <?php foreach($customerAddress as $address) :?>
+    var address = '<?php echo $address;?>';
+    var locaFound = locationsByProvince.find(item => item.code === address);
+    locations.push(locaFound);
+  <?php endforeach;?>
 </script>
 <style type="text/css">
 #mapContainer,
 #map {
-  height: 289px;
+  height: 750px;
   width: 100%;
   margin: 0px;
   padding: 0px
