@@ -122,10 +122,10 @@ class Dashboard extends \Magento\Backend\Block\Template
     // Nếu không có khoảng thời gian được gửi theo request thì sẽ mặc định khoảng thời gian là 7 ngày
     public function getOrderDataByCategories()
     {
-        $categoryId1 = 20;
-        $categoryId2 = 17;
-        $categoryId3 = 3;
-        $categoryId4 = 9;
+        $categoryId1 = 43;
+        $categoryId2 = 45;
+        $categoryId3 = 42;
+        $categoryId4 = 46;
         $data = array();
         $data['cat1'] = [];
         $data['cat2'] = [];
