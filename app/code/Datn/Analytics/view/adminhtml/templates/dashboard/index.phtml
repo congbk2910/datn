@@ -59,6 +59,24 @@ $currency = $block->getCurrencySymbol();
                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                 <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
               </div>
+              <div class="export_csv">
+                <button id="open-modal-export">Xuất dữ liệu</button>
+                <div id="export-type" style="display:none">
+                  <div>
+                    <input type="radio" id="address" name="export_type" value="address">
+                    <label for="address">Địa chỉ</label>
+                    <input type="radio" id="year" name="export_type" value="year">
+                    <label for="year">Theo năm (kiểu 1)</label>
+                    <input type="radio" id="year2" name="export_type" value="year2">
+                    <label for="year2">Theo năm (kiểu 2)</label>
+                    <input type="radio" id="month" name="export_type" value="month">
+                    <label for="month">Theo tháng</label>
+                    <input type="radio" id="customer" name="export_type" value="customer">
+                    <label for="customer">Theo khách hàng</label>
+                  </div>
+                  <button id="export-csv" style="display:none">Xuất file</button>
+                </div>
+              </div>
             </div>
             <div class="clearfix"></div>
           </div>
@@ -571,8 +589,27 @@ $serializedFormData = $this->helper('Magento\Framework\Json\Helper\Data')->jsonE
   <?php foreach($customerAddress as $address) :?>
     var address = '<?php echo $address;?>';
     var locaFound = locationsByProvince.find(item => item.code === address);
-    locations.push(locaFound);
+    if(locaFound) locations.push(locaFound);
   <?php endforeach;?>
+</script>
+<script type="text/javascript">
+  require(['jquery', 'mage/url'], function($, url) {
+    $('#open-modal-export').click(function() {
+      $('#export-type').toggle();
+    });
+    $('input[name="export_type"]').click(function() {
+      if ($('input[name="export_type"]:checked').val()) {
+        $('#export-csv').show();
+      } else {
+        $('#export-csv').hide();
+      }
+    });
+    $('#export-csv').click(function() {
+      var base_url = window.location.origin + '/' + window.location.pathname.split ('/') [1] + '/';
+      var exportType = $('input[name="export_type"]:checked').val();
+      window.open(base_url + 'analytics/index/exportxls?type=' + exportType);
+    });
+  });
 </script>
 <style type="text/css">
 #mapContainer,
