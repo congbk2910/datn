@@ -72,18 +72,23 @@ class Exportxls extends \Magento\Framework\App\Action\Action
     	$type = $this->getRequest()->getParam('type');
     	switch ($type) {
 			case 'address':
+				// Xuất file theo địa chỉ khách hàng
 				$this->exportByAddress();
 				break;
 			case 'year':
+				// Xuất file theo năm
 				$this->exportByYear();
 				break;
 			case 'year2':
+				// Xuất file theo năm kiểu 2
 				$this->exportByYearSecond();
 				break;
 			case 'month':
+				// Xuất file theo tháng
 				$this->exportByMonth();
 				break;
 			case 'customer':
+				// Xuất file theo khách hàng
 				$this->exportByCustomer();
 				break;
 			default:
