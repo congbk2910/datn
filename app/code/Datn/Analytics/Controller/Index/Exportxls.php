@@ -126,11 +126,14 @@ class Exportxls extends \Magento\Framework\App\Action\Action
             	$cscustomerAddress[$csbillingAddress->getData('city')]['order_total'] = $order->getData('grand_total');
             }
 
-        	$cscustomerAddress[$csbillingAddress->getData('city')]['customer_ids'][] = $order->getCustomerId();
+        	$cscustomerAddress[$csbillingAddress->getData('city')]['customer_ids'][] = $order->getCustomerId() ? $order->getCustomerId() : '0';
         }
 
 
         foreach($customerAddress as $address) {
+            if (!isset($cscustomerAddress[$address['id']]) || !isset($cscustomerAddress[$address['id']]['customer_ids']) ) {
+                continue;
+            }
         	$arrayCountValues = array_count_values($cscustomerAddress[$address['id']]['customer_ids']);
         	$number_customer_first_buy = array();
 			foreach ($arrayCountValues as $key=>$value){
@@ -184,7 +187,7 @@ class Exportxls extends \Magento\Framework\App\Action\Action
         $cscustomerByYear = [];
         foreach ($orders as $order) {
         	$createdAt = date('m/Y',strtotime($order->getData('created_at')));
-        	$cscustomerByYear[$createdAt]['customer_ids'][] = $order->getCustomerId();
+        	$cscustomerByYear[$createdAt]['customer_ids'][] = $order->getCustomerId() ? $order->getCustomerId() : '0';
         }
 
         foreach($months as $month) {
@@ -337,7 +340,7 @@ class Exportxls extends \Magento\Framework\App\Action\Action
 
         $resultLayout = $this->resultLayoutFactory->create();
         $customerAddress = $this->getCustomerAddress();
-        $fileName = 'bao-cao-theo-nam.csv'; // Add Your CSV File name
+        $fileName = 'bao-cao-theo-thang.csv'; // Add Your CSV File name
         $filePath =  $this->directoryList->getPath(DirectoryList::MEDIA) . "/" . $fileName;
         $orders = $this->getOrders();
 
