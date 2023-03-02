@@ -357,7 +357,7 @@ class Dashboard extends \Magento\Backend\Block\Template
                 } elseif ($age > 30 && $age < 51 ) {
                     $customerAge['31-50'] += 1;
                 } else {
-                    $customerAge['50->'] += 1;
+                    $customerAge['51->'] += 1;
                 }
             }
         }
