@@ -398,7 +398,6 @@ class Exportxls extends \Magento\Framework\App\Action\Action
     function exportByCustomer() {
     	/** Add yout header name here */
         $content[] = [
-        	'id' => 'ID',
             'name' => 'Ten khach hang',
             'email' => 'Email khach hang',
             'phone' => 'SDT khach hang',
@@ -460,7 +459,6 @@ class Exportxls extends \Magento\Framework\App\Action\Action
         	}
 
         	$content[] = [
-        		$customer['id'],
         		$name,
         		$email,
         		$phone,
